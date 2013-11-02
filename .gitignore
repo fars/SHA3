@@ -1,3 +1,11 @@
+
+#QtCreator
+*.config
+*.files
+*.includes
+*.creator
+*.user
+
 # dir
 [Oo]ut
 
