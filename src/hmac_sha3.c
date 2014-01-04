@@ -27,6 +27,60 @@
 * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <string.h>
 
 #include "hmac_sha3.h"
 #include "sha3.h"
+
+
+//-----------------------------------------------------------------------------
+hmac_sha3_status_t hmac_sha3_init(hmac_sha3_hash_mode_t mode,
+                                  hmac_sha3_ctx_t *ctx,
+                                  const uint8_t *key,
+                                  int key_len)
+{
+    //TODO
+    return HMAC_SHA3_OK;
+}
+
+
+//-----------------------------------------------------------------------------
+hmac_sha3_status_t hmac_sha3_update(hmac_sha3_ctx_t *ctx,
+                                    const uint8_t *input_data,
+                                    uint32_t len)
+{
+    //TODO
+    return HMAC_SHA3_OK;
+}
+
+
+//-----------------------------------------------------------------------------
+hmac_sha3_status_t hmac_sha3_final(hmac_sha3_ctx_t *ctx, uint8_t *output_data)
+{
+    //TODO
+    return HMAC_SHA3_OK;
+}
+
+
+//-----------------------------------------------------------------------------
+hmac_sha3_status_t HMAC_SHA3(hmac_sha3_hash_mode_t mode,
+                             const uint8_t *input_data,
+                             uint32_t len,
+                             const uint8_t *key,
+                             int key_len,
+                             uint8_t *output_data)
+{
+    hmac_sha3_status_t res = HMAC_SHA3_OK;
+    hmac_sha3_ctx_t ctx;
+
+    if ( (input_data == NULL) || (output_data == NULL) || (key == NULL) )
+    {
+        return HMAC_SHA3_ERROR;
+    }
+
+    res = hmac_sha3_init(mode , &ctx, key, key_len);
+    res = hmac_sha3_update(&ctx, input_data, len);
+    res = hmac_sha3_final(&ctx, output_data);
+
+    return res;
+}

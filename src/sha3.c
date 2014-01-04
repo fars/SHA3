@@ -185,12 +185,14 @@ sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx)
 //-------------------------------------------------------
 sha3_status_t sha3_update(sha3_ctx_t *ctx, const uint8_t *input_data, uint32_t len)
 {
+    //TODO
 	return SHA3_OK;
 }
 
 //-------------------------------------------------------
 sha3_status_t sha3_final(sha3_ctx_t *ctx, uint8_t *output_data)
 {
+    //TODO
 	return SHA3_OK;
 }
 
