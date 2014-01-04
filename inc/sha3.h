@@ -71,14 +71,52 @@ typedef struct sha3_ctx{
         uint8_t  bs;
 } sha3_ctx_t;
 
-
+/**
+ * @brief          SHA3 context setup
+ *
+ * @param mode     [in] SHA3 hash mode
+ * @param ctx      [in] pointer to context to be initialized
+ *
+ * @return         status of operation
+ */
 sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx); 
+
+/**
+ * @brief             SHA3 input data chunks processing
+ *
+ * @param ctx         [in] SHA3 context
+ * @param input_data  [in] pointer to buffer with plain data chunck
+ * @param len         [in] plain data chunk len in bytes
+ *
+ * @return            status of operation
+ */
 
 sha3_status_t sha3_update(sha3_ctx_t *ctx, const uint8_t *input_data, uint32_t len);
 
+/**
+ * @brief             Returns SHA3 hash
+ *
+ * @param ctx         [in] SHA3 context
+ * @param output_data [out] pointer to buffer with hash
+ *
+ * @return            status of operation
+ */
 sha3_status_t sha3_final(sha3_ctx_t *ctx, uint8_t *output_data);
 
-sha3_status_t SHA3(sha3_hash_modes_t mode, const uint8_t *input_data, uint32_t len, uint8_t *output_data);
+/**
+ * @brief             HSHA3 single data chunk processing
+ *
+ * @param mode        [in] SHA3 hash mode
+ * @param input_data  [in] pointer to buffer with plain data chunck
+ * @param len         [in] plain data chunk len in bytes
+ * @param output_data [out] pointer to buffer with hash
+ *
+ * @return            status of operation
+ */
+sha3_status_t SHA3(sha3_hash_modes_t mode,
+                   const uint8_t *input_data,
+                   uint32_t len,
+                   uint8_t *output_data);
 
 #ifdef  __cplusplus
 }
