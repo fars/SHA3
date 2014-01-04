@@ -32,7 +32,6 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-
 #include "sha3.h"
 
 #define KECCAK_VECTOR_LEN 5
@@ -147,3 +146,68 @@ static void keccak(uint64_t (*A)[KECCAK_VECTOR_LEN])
   
 }
 
+//-------------------------------------------------------
+sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx)
+{
+    memset(ctx->a, 0x00, 5 * 5 * 8);
+    
+    switch(mode)
+    {
+    	case SHA3_224: 
+    		ctx->r = 1152; 
+    		ctx->c = 448; 
+    		ctx->d = 28;
+    		break;
+    	case SHA3_256: 
+    		ctx->r = 1088; 
+    		ctx->c = 512; 
+    		ctx->d = 32;
+    		break;
+    	case SHA3_384:
+    		ctx->r = 832; 
+    		ctx->c = 768; 
+    		ctx->d = 48;
+    		break;
+    	case SHA3_512: 
+    		ctx->r = 576; 
+    		ctx->c = 1024; 
+    		ctx->d = 64;
+    		break;
+    	default:
+    		return SHA3_ERROR;
+    }
+    
+    ctx->bs = (uint8_t)(r / 8);
+        
+    return SHA3_OK;
+}
+
+//-------------------------------------------------------
+sha3_status_t sha3_update(sha3_ctx_t *ctx, const uint8_t *input_data, uint32_t len)
+{
+	return SHA3_OK;
+}
+
+//-------------------------------------------------------
+sha3_status_t sha3_final(sha3_ctx_t *ctx, uint8_t *output_data)
+{
+	return SHA3_OK;
+}
+
+//-------------------------------------------------------
+sha3_status_t SHA3(sha3_hash_modes_t mode, const uint8_t *input_data, uint32_t len, uint8_t *output_data)
+{
+	sha3_status_t res = SHA3_OK; 
+	sha3_ctx_t ctx;
+	
+	if ( (input_data == NULL) || (output_data == NULL) )
+	{
+		return SHA3_ERROR;
+	}
+	
+	res = sha3_init(mode ,&ctx);
+	res = sha3_update(&ctx, input_data, len);
+	res = sha3_final(&ctx, output_data);
+	
+	return res;
+}
