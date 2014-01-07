@@ -30,7 +30,7 @@
 
 #include <stdint.h>
 #include <inttypes.h>
-#include <stdlib.h>
+#include <string.h>
 
 #include "sha3.h"
 
@@ -92,6 +92,7 @@ static inline int mod (int a, int b)
   return ret;
 }
 
+#if 0
 // Keccak round
 //------------------------------------------------
 static void keccak(uint64_t (*A)[KECCAK_VECTOR_LEN])
@@ -145,6 +146,7 @@ static void keccak(uint64_t (*A)[KECCAK_VECTOR_LEN])
   }
   
 }
+#endif
 
 //-------------------------------------------------------
 sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx)
@@ -177,7 +179,7 @@ sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx)
     		return SHA3_ERROR;
     }
     
-    ctx->bs = (uint8_t)(r / 8);
+    ctx->bs = (uint8_t)(ctx->r / 8);
         
     return SHA3_OK;
 }

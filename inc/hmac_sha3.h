@@ -32,6 +32,8 @@
 
 #include <stdint.h>
 
+#include "sha3.h"
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -70,6 +72,8 @@ typedef struct hmac_sha3_ctx{
     uint8_t  opad[64];                  // outer padding
     uint32_t hmac_key_length;
     uint8_t  hmac_key[HMAC_MAX_KEY_LEN];
+    uint8_t  buffer[64];                // data block being processed
+    sha3_ctx_t ctx;
 } hmac_sha3_ctx_t;
 
 
@@ -115,7 +119,7 @@ hmac_sha3_status_t hmac_sha3_final(hmac_sha3_ctx_t *ctx, uint8_t *output_data);
 /**
  * @brief             HMAC-SHA3 single data chunk processing
  *
- * @param mode        [in] SHA3 hash mode
+ * @param mode        [in] HMAC-SHA3 hash mode
  * @param input_data  [in] pointer to buffer with plain data chunck
  * @param len         [in] plain data chunk len in bytes
  * @param key         [in] pointer to key buffer

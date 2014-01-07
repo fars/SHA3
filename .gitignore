@@ -8,6 +8,8 @@
 
 # dir
 [Oo]ut
+[Bb]in
+[Oo]bj
 
 # Object files
 *.o

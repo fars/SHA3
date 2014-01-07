@@ -12,11 +12,10 @@
 
 #include "sha3.h"
 
-int main(void) 
+int main(void)
 {
 	sha3_ctx_t ctx;
 	sha3_init(SHA3_256 ,&ctx);
 	
-	
-	return EXIT_SUCCESS;
+    return 0;
 }
