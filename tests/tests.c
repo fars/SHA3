@@ -16,6 +16,7 @@ int main(void)
 {
 	sha3_ctx_t ctx;
 	sha3_init(SHA3_256 ,&ctx);
+    sha3_init(SHA3_256 ,&ctx);
 	
     return 0;
 }
