@@ -34,7 +34,6 @@
 extern "C" {
 #endif
 
-/** SHA3 hash length for modes (in bytes) */
 #define SHA3_224_HASH_LEN (224/8)
 #define SHA3_256_HASH_LEN (256/8)
 #define SHA3_384_HASH_LEN (384/8)

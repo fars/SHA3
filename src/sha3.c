@@ -64,94 +64,95 @@ static const uint64_t RC[24]={
 		       0x8000000080008008
 };
 
+
 //rotation offsets
-static const uint64_t r[KECCAK_VECTOR_LEN][KECCAK_VECTOR_LEN]={ 
-							{0,36,3,41,18},
-							{1,44,10,45,2},
-							{62,6,43,15,61},
-							{28,55,25,21,56},
-							{27,20,39,8,14}
-						   };
-
-
-//-------------------------------------------------
-static inline int mod (int a, int b)
+static const uint64_t keccakf_rotc[24] =
 {
-  if(b < 0)
-  {
-    return mod(-a, -b);
-  }
+        1,  3,  6,  10, 15, 21, 28, 36, 45, 55, 2,  14,
+        27, 41, 56, 8,  25, 43, 62, 18, 39, 61, 20, 44,
+};
 
-  int ret = a % b;
+static const uint64_t keccakf_piln[24] =
+{
+        10, 7,  11, 17, 18, 3, 5,  16, 8,  21, 24, 4,
+        15, 23, 19, 13, 12, 2, 20, 14, 22, 9,  6,  1,
+};
 
-  if(ret < 0)
-  {
-    ret+=b;
-  }
 
-  return ret;
-}
+#define ROTL64(x, y)        (((x) << (y)) | ((x) >> (64 - (y))))
 
-#if 0
-// Keccak round
+// Keccak round function
 //------------------------------------------------
-static void keccak(uint64_t (*A)[KECCAK_VECTOR_LEN])
+static void keccak_fn(uint64_t s[25], uint32_t rounds)
 {
-  int i;
-  uint64_t C[KECCAK_VECTOR_LEN];
-  uint64_t D[KECCAK_VECTOR_LEN];
-  uint64_t B[KECCAK_VECTOR_LEN][KECCAK_VECTOR_LEN];
-  uint8_t x, y;
+    register int i, j, round;
+    register uint64_t t;
+    uint64_t bc[5];
 
-  for(i = 0; i < 24; i++)
-  { 
-	// Theta step 
-    for(x = 0;x < KECCAK_VECTOR_LEN; x++)
+    for(round = 0; round < rounds; round++)
     {
-      C[x] = A[x][0] ^ A[x][1] ^ A[x][2]^ A[x][3] ^ A[x][4];
-    }
+            //Theta step
+            for(i = 0; i < 5; i++)
+            {
+                bc[i] = s[i] ^ s[i + 5] ^ s[i + 10] ^ s[i + 15] ^ s[i + 20];
+            }
 
-    for(x = 0;x < KECCAK_VECTOR_LEN; x++)
-    {
-      D[x] = C[(x + 4) % 5] ^ ((C[(x + 1) % 5] << 1) | (C[(x + 1) % 5] >> 63));
-    }
-    
-    for(x = 0; x < KECCAK_VECTOR_LEN; x++)
-    {
-      for(y = 0; y < KECCAK_VECTOR_LEN; y++)
-      {
-        A[x][y]=A[x][y]^D[x];
-      }
-    }
+            for(i = 0; i < 5; i++)
+            {
+                t = bc[(i + 4) % 5] ^ ROTL64(bc[(i + 1) % 5], 1);
+                for(j = 0; j < 25; j += 5)
+                {
+                        s[j + i] ^= t;
+                }
+            }
 
-    //Rho and pi steps
-    for(x = 0; x < KECCAK_VECTOR_LEN; x++)
-    {
-      for(y = 0;y < KECCAK_VECTOR_LEN; y++)
-      {
-        B[y][mod((2*x+3*y),5)]=((A[x][y] << r[x][y]) | (A[x][y] >> (64-r[x][y])));
-      }
-    }
+            //Rho and Pi steps
+            t = s[1];
+            for(i = 0; i < 24; i++)
+            {
+                j = keccakf_piln[i];
+                bc[0] = s[j];
+                s[j] = ROTL64(t, keccakf_rotc[i]);
+                t = bc[0];
+            }
 
-    //Xi state
-    for(x=0; x<KECCAK_VECTOR_LEN; x++)
-    {
-      for(y=0; y<KECCAK_VECTOR_LEN; y++)
-      {
-        A[x][y]=B[x][y]^((~B[mod((x+1),5)][y]) & B[mod((x+2),5)][y]);
-      }
-    }
+            //Chi step
+            for(j = 0; j < 25; j += 5)
+            {
+                for(i = 0; i < 5; i++)
+                {
+                    bc[i] = s[j + i];
+                }
 
-    A[0][0]=A[0][0]^RC[i];
-  }
-  
+                for(i = 0; i < 5; i++)
+                {
+                    s[j + i] ^= (~bc[(i + 1) % 5]) & bc[(i + 2) % 5];
+                }
+            }
+
+            //Iota
+            s[0] ^= RC[round];
+    }
 }
-#endif
+
+//-------------------------------------------------------
+static sha3_status_t sha3_sponge_absorb(sha3_ctx_t *ctx, const uint8_t * input_data, uint32_t len)
+{
+    //TODO
+    return SHA3_OK;
+}
+
+//-------------------------------------------------------
+static sha3_status_t sha3_sponge_squeeze(sha3_ctx_t *ctx, uint8_t *output_data)
+{
+    //TODO
+    return SHA3_OK;
+}
 
 //-------------------------------------------------------
 sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx)
 {
-    memset(ctx->a, 0x00, 5 * 5 * 8);
+    memset(ctx, 0, sizeof(sha3_ctx_t) );
     
     switch(mode)
     {
@@ -185,17 +186,15 @@ sha3_status_t sha3_init(sha3_hash_modes_t mode, sha3_ctx_t *ctx)
 }
 
 //-------------------------------------------------------
-sha3_status_t sha3_update(sha3_ctx_t *ctx, const uint8_t *input_data, uint32_t len)
+sha3_status_t sha3_update(sha3_ctx_t *ctx, const uint8_t * input_data, uint32_t len)
 {
-    //TODO
-	return SHA3_OK;
+    return sha3_sponge_absorb(ctx, input_data, len);
 }
 
 //-------------------------------------------------------
-sha3_status_t sha3_final(sha3_ctx_t *ctx, uint8_t *output_data)
+sha3_status_t sha3_final(sha3_ctx_t *ctx, uint8_t * output_data)
 {
-    //TODO
-	return SHA3_OK;
+    return sha3_sponge_squeeze(ctx, output_data);
 }
 
 //-------------------------------------------------------
