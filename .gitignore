@@ -10,6 +10,10 @@
 [Oo]ut
 [Bb]in
 [Oo]bj
+cov-int
+
+#tar
+*.tgz
 
 # Object files
 *.o

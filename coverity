@@ -1,0 +1,3 @@
+cov-build --dir cov-int make
+tar czvf sha3.tgz cov-int
+#rm -rf cov-int/
