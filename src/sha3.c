@@ -130,7 +130,7 @@ static void keccak_fn(uint64_t s[25], uint32_t rounds)
                 }
             }
 
-            //Iota
+            //Iota step
             s[0] ^= RC[round];
     }
 }

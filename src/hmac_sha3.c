@@ -39,7 +39,13 @@ hmac_sha3_status_t hmac_sha3_init(hmac_sha3_hash_mode_t mode,
                                   const uint8_t *key,
                                   int key_len)
 {
+    if ( (NULL == ctx) || (NULL == key) )
+    {
+        return HMAC_SHA3_ERROR;
+    }
+
     //TODO
+
     return HMAC_SHA3_OK;
 }
 
@@ -49,15 +55,30 @@ hmac_sha3_status_t hmac_sha3_update(hmac_sha3_ctx_t *ctx,
                                     const uint8_t *input_data,
                                     uint32_t len)
 {
-    //TODO
-    return HMAC_SHA3_OK;
+    if ( (NULL == ctx) || (NULL == input_data) )
+    {
+        return HMAC_SHA3_ERROR;
+    }
+
+    if ( SHA3_OK == sha3_update(&ctx->ctx, input_data, len) )
+    {
+        return HMAC_SHA3_OK;
+    }
+
+    return HMAC_SHA3_ERROR;
 }
 
 
 //-----------------------------------------------------------------------------
 hmac_sha3_status_t hmac_sha3_final(hmac_sha3_ctx_t *ctx, uint8_t *output_data)
 {
+    if ( (NULL == ctx) || (NULL == output_data) )
+    {
+        return HMAC_SHA3_ERROR;
+    }
+
     //TODO
+
     return HMAC_SHA3_OK;
 }
 

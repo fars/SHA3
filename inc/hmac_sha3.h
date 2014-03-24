@@ -50,6 +50,9 @@ extern "C" {
 
 #define HMAC_MAX_KEY_LEN  64
 
+#define IPAD 0x36
+#define OPAD 0x5C
+
 typedef enum 
 {
 	HMAC_SHA3_512 = 0,
