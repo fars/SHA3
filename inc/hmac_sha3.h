@@ -70,13 +70,13 @@ typedef enum
 /**
  * HMAC-SHA3 context.
  */
-typedef struct hmac_sha3_ctx{
-    uint8_t  ipad[64];                  // inner padding
-    uint8_t  opad[64];                  // outer padding
-    uint32_t hmac_key_length;
-    uint8_t  hmac_key[HMAC_MAX_KEY_LEN];
-    uint8_t  buffer[64];                // data block being processed
-    sha3_ctx_t ctx;
+typedef struct hmac_sha3_ctx
+{
+    uint8_t           ipad[HMAC_MAX_KEY_LEN];                  // inner padding
+    uint8_t           opad[HMAC_MAX_KEY_LEN];                  // outer padding
+    sha3_hash_modes_t sha_mode;
+    uint32_t          blocksize;
+    sha3_ctx_t        ctx;
 } hmac_sha3_ctx_t;
 
 

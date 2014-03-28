@@ -39,12 +39,60 @@ hmac_sha3_status_t hmac_sha3_init(hmac_sha3_hash_mode_t mode,
                                   const uint8_t *key,
                                   int key_len)
 {
+    int i;
+
     if ( (NULL == ctx) || (NULL == key) )
     {
         return HMAC_SHA3_ERROR;
     }
 
-    //TODO
+    memset (ctx, 0, sizeof(hmac_sha3_ctx_t) );
+
+    switch(mode)
+    {
+        case HMAC_SHA3_224:
+            ctx->sha_mode = SHA3_224;
+            ctx->blocksize = SHA3_224_HMAC_LEN;
+            break;
+        case HMAC_SHA3_256:
+            ctx->sha_mode = SHA3_256;
+            ctx->blocksize = SHA3_256_HMAC_LEN;
+            break;
+        case HMAC_SHA3_384:
+            ctx->sha_mode = SHA3_384;
+            ctx->blocksize = SHA3_384_HMAC_LEN;
+            break;
+        case HMAC_SHA3_512:
+            ctx->sha_mode = SHA3_512;
+            ctx->blocksize = SHA3_512_HMAC_LEN;
+            break;
+        default:
+            return HMAC_SHA3_ERROR;
+    }
+
+     // Step 1. If key is longer than blocksize  reset it to key = HASH(key)
+    if (key_len > ctx->blocksize)
+    {
+        SHA3(ctx->sha_mode, key, key_len, (uint8_t*)key);
+        key_len = ctx->blocksize;
+    }
+
+    // Step 2. Start out by storing key in pads
+    memset(ctx->ipad, 0, HMAC_MAX_KEY_LEN);
+    memset(ctx->opad, 0, HMAC_MAX_KEY_LEN);
+
+    memcpy( ctx->ipad, key, key_len);
+    memcpy( ctx->opad, key, key_len);
+
+    // Step 3. XOR key with ipad and opad values
+    for (i = 0; i < HMAC_MAX_KEY_LEN; i++)
+    {
+        ctx->ipad[i] ^= IPAD;
+        ctx->opad[i] ^= OPAD;
+    }
+
+    sha3_init(ctx->sha_mode, &ctx->ctx);
+    sha3_update(&ctx->ctx, ctx->ipad, HMAC_MAX_KEY_LEN);
 
     return HMAC_SHA3_OK;
 }
@@ -72,12 +120,28 @@ hmac_sha3_status_t hmac_sha3_update(hmac_sha3_ctx_t *ctx,
 //-----------------------------------------------------------------------------
 hmac_sha3_status_t hmac_sha3_final(hmac_sha3_ctx_t *ctx, uint8_t *output_data)
 {
+
+    sha3_ctx_t out_ctx;
+    sha3_status_t res = SHA3_ERROR;
+
     if ( (NULL == ctx) || (NULL == output_data) )
     {
         return HMAC_SHA3_ERROR;
     }
 
-    //TODO
+    if ( SHA3_OK != sha3_final(&ctx->ctx, output_data) )
+    {
+        return HMAC_SHA3_ERROR;
+    }
+
+    res = sha3_init(ctx->sha_mode , &out_ctx);
+    res = sha3_update(&out_ctx, ctx->opad, ctx->blocksize);
+    res = sha3_final(&out_ctx, output_data);
+
+    if(SHA3_OK != res)
+    {
+        return HMAC_SHA3_ERROR;
+    }
 
     return HMAC_SHA3_OK;
 }
