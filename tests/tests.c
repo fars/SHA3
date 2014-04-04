@@ -127,10 +127,12 @@ static sha3_test_result_t sha3_null_string_test(sha3_hash_modes_t sha3_mode, uin
 
         if(SHA3_TEST_FAILS == test_res)
         {
+            print_test_result(i, test_res);
             return test_res;
         }
     }
 
+    print_test_result(i, test_res);
     return test_res;
 }
 
@@ -212,10 +214,12 @@ static sha3_test_result_t sha3_ancronim_string_test(sha3_hash_modes_t sha3_mode,
 
         if(SHA3_TEST_FAILS == test_res)
         {
+            print_test_result(i, test_res);
             return test_res;
         }
     }
 
+    print_test_result(i, test_res);
     return test_res;
 }
 
@@ -229,9 +233,8 @@ static sha3_test_result_t sha3_sream_test(sha3_hash_modes_t sha3_mode)
 //---------------------------------------------------------------------
 int main(void)
 {
-	sha3_ctx_t ctx;
-	sha3_init(SHA3_256 ,&ctx);
-    sha3_init(SHA3_256 ,&ctx);
+    sha3_null_string_test(SHA3_256, 1);
+    sha3_ancronim_string_test(SHA3_256, 1);
 	
     return 0;
 }
