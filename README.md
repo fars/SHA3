@@ -14,9 +14,9 @@ Coverity static scan
 </a>
 
 
-![Alt text](https://github.com/fars/SHA3/blob/master/sponge.png "Sponge")
-![Alt text](https://github.com/fars/SHA3/blob/master/keccak.png "Keccak 3D")
-![Alt text](https://github.com/fars/SHA3/blob/master/RKeccak.jpg "Keccak 2D")
+![Alt text](sponge.png "Sponge")
+![Alt text](keccak.png "Keccak 3D")
+![Alt text](RKeccak.jpg "Keccak 2D")
 
 Regards,
 Sergii Sidorov
