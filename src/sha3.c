@@ -34,6 +34,7 @@
 
 #include "sha3.h"
 
+// TODO: define all magic here
 #define KECCAK_VECTOR_LEN 5
 
 // pseudo random round constants
